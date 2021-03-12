@@ -33,5 +33,28 @@ const fetchMyIP = function(callback) {
   });
 };
 
+const fetchCoordsByIP = function(ip, callback) {
+  let data = {};
+  request(`https://freegeoip.app/json/${ip}`, (error, response, body)=>{
+    if(error){
+      callback(error, null);
+      return;
+    }
+    if (response.statusCode !== 200) {
+      const msg = `Status Code ${response.statusCode} when fetching coordinates for IP. Response: ${body}`;
+      callback(Error(msg), null);
+      return;
+    }
+    data.latitude = JSON.parse(body)["latitude"];
+    data.longitude = JSON.parse(body)["longitude"];
+    callback(error, data);
+  });
+  
+};
 
-module.exports = { fetchMyIP };
+
+
+module.exports = {
+  fetchMyIP,
+  fetchCoordsByIP
+};
